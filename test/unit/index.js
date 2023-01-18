@@ -2,8 +2,8 @@
 
 const test = require('ava')
 
-const { prepare } = require('./util')
-const compression = require('..')
+const { prepare } = require('../util')
+const compression = require('../../src')
 
 test('should export a function', t => {
   t.is(typeof compression, 'function')

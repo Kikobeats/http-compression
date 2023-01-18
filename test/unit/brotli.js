@@ -3,14 +3,14 @@
 const test = require('ava')
 const zlib = require('zlib')
 
-const { toAscii, prepare } = require('./util')
-const compression = require('..')
+const { toAscii, prepare } = require('../util')
+const compression = require('../../src')
 
 const suite = 'createBrotliCompress' in zlib ? test : test.skip
 
 suite('compresses content with brotli when supported', async t => {
   const { req, res } = prepare('GET', 'br')
-  compression({ brotli: true, threshold: 0 })(req, res)
+  compression({ threshold: 0 })(req, res)
   res.writeHead(200, { 'content-type': 'text/plain' })
   res.end('hello world')
 
@@ -23,7 +23,7 @@ suite('compresses content with brotli when supported', async t => {
 
 suite('gives brotli precedence over gzip', t => {
   const { req, res } = prepare('GET', 'br')
-  compression({ brotli: true, threshold: 0 })(req, res)
+  compression({ threshold: 0 })(req, res)
   res.writeHead(200, { 'content-type': 'text/plain' })
   res.end('hello world'.repeat(20))
 
