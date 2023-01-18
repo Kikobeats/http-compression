@@ -1,4 +1,6 @@
 const { ServerResponse } = require('http')
+const simpleGet = require('simple-get')
+const { once } = require('events')
 
 // IncomingMessage
 class Request {
@@ -56,4 +58,18 @@ const prepare = (method, encoding) => {
 const toAscii = input =>
   JSON.stringify(Buffer.from(input).toString('ascii')).replace(/(^"|"$)/g, '')
 
-module.exports = { prepare, toAscii }
+const listen = async (server, ...args) => {
+  server.listen(...args)
+  await once(server, 'listening')
+  const { address, port, family } = server.address()
+  return `http://${family === 'IPv6' ? `[${address}]` : address}:${port}/`
+}
+
+const get = (url, opts) =>
+  new Promise((resolve, reject) =>
+    simpleGet.concat({ url, ...opts }, (err, res, data) =>
+      err ? reject(err) : resolve({ res, data })
+    )
+  )
+
+module.exports = { prepare, toAscii, listen, get }

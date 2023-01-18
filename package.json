@@ -26,7 +26,6 @@
     "http",
     "server"
   ],
-  "dependencies": {},
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
@@ -39,6 +38,7 @@
     "nano-staged": "latest",
     "npm-check-updates": "latest",
     "prettier-standard": "latest",
+    "simple-get": "latest",
     "simple-git-hooks": "latest",
     "standard": "latest",
     "standard-markdown": "latest",
