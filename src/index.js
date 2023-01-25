@@ -42,6 +42,7 @@ module.exports = ({
 
     let compress
     let pendingStatus
+    let pendingListeners = []
     let started = false
     let size = 0
 
@@ -52,6 +53,7 @@ module.exports = ({
         String(res.getHeader('Content-Type') || 'text/plain')
       )
       const cleartext = !res.getHeader('Content-Encoding')
+      const listeners = pendingListeners || []
       if (compressible && cleartext && size >= threshold) {
         res.setHeader('Content-Encoding', encoding)
         res.removeHeader('Content-Length')
@@ -69,16 +71,17 @@ module.exports = ({
         // backpressure
         compress.on(
           'data',
-          (...args) => write.apply(res, args) === false && compress.pause()
+          chunk => write.call(res, chunk) === false && compress.pause()
         )
         on.call(res, 'drain', () => compress.resume())
-        compress.on('end', (...args) => end.apply(res, args))
+        compress.on('end', () => end.call(res))
+        listeners.forEach(p => compress.on.apply(compress, p))
+      } else {
+        pendingListeners = null
+        listeners.forEach(p => on.apply(res, p))
       }
 
-      const listeners = pendingListeners
-      pendingListeners = null
-      listeners.forEach(p => on.apply(res, p))
-      if (pendingStatus) writeHead.call(res, pendingStatus)
+      writeHead.call(res, pendingStatus || res.statusCode)
     }
 
     const { end, write, on, writeHead } = res
@@ -117,9 +120,8 @@ module.exports = ({
       return compress.end.apply(compress, arguments)
     }
 
-    let pendingListeners = []
     res.on = function (type, listener) {
-      if (!pendingListeners) on.call(this, type, listener)
+      if (!pendingListeners || type !== 'drain') on.call(this, type, listener)
       else if (compress) compress.on(type, listener)
       else pendingListeners.push([type, listener])
       return this

@@ -1,11 +1,12 @@
 'use strict'
 
+const http = require('http')
 const test = require('ava')
 
-const { prepare } = require('../util')
+const { prepare, get, listen } = require('../util')
 const compression = require('../../src')
 
-test('should export a function', t => {
+test('export a function', t => {
   t.is(typeof compression, 'function')
 })
 
@@ -19,6 +20,34 @@ test('installs as middleware', t => {
   })
 
   t.true(calledNext)
+})
+
+test('allow server to work if not compressing', async t => {
+  const handler = (req, res) => {
+    res.setHeader('content-type', 'text/plain')
+    res.end('OK')
+  }
+
+  const server = http.createServer((req, res) =>
+    compression({ level: 1, threshold: 4 })(req, res, () => handler(req, res))
+  )
+
+  const serverUrl = await listen(server)
+  t.teardown(() => server.close())
+
+  const { res, data } = await get(serverUrl, {
+    headers: {
+      'accept-encoding': 'gzip'
+    }
+  })
+
+  t.is(res.statusCode, 200)
+  t.is(data.toString(), 'OK')
+
+  t.is(res.headers['content-type'], 'text/plain')
+  t.is(res.headers['content-encoding'], undefined)
+  t.is(res.headers['transfer-encoding'], 'chunked')
+  t.is(res.headers['content-length'], undefined)
 })
 
 test('respect `accept-encoding`', t => {
@@ -41,4 +70,52 @@ test('respect `accept-encoding`', t => {
 
     t.is(res.getHeader('content-encoding'), undefined)
   }
+})
+
+test('respect `res.statusCode`', async t => {
+  const handler = (req, res) => {
+    res.statusCode = 201
+    res.end('hello world')
+  }
+
+  const server = http.createServer((req, res) =>
+    compression({ threshold: 0 })(req, res, () => handler(req, res))
+  )
+
+  const serverUrl = await listen(server)
+  t.teardown(() => server.close())
+
+  const { res, data } = await get(serverUrl, {
+    headers: {
+      'accept-encoding': 'br'
+    }
+  })
+
+  t.is(res.headers['content-encoding'], 'br')
+  t.is(res.statusCode, 201)
+  t.is(data.toString(), 'hello world')
+})
+
+test('respect `res.writeHead`', async t => {
+  const handler = (req, res) => {
+    res.writeHead(201)
+    res.end('hello world')
+  }
+
+  const server = http.createServer((req, res) =>
+    compression({ threshold: 0 })(req, res, () => handler(req, res))
+  )
+
+  const serverUrl = await listen(server)
+  t.teardown(() => server.close())
+
+  const { res, data } = await get(serverUrl, {
+    headers: {
+      'accept-encoding': 'br'
+    }
+  })
+
+  t.is(res.headers['content-encoding'], 'br')
+  t.is(res.statusCode, 201)
+  t.is(data.toString(), 'hello world')
 })
