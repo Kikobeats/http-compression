@@ -5,7 +5,7 @@ const test = require('ava')
 const { prepare } = require('../util')
 const compression = require('../../src')
 
-test('compresses content over threshold', t => {
+test('compress body when over threshold', t => {
   const { req, res } = prepare('GET', 'gzip')
 
   compression()(req, res)
