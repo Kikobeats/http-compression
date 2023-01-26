@@ -85,17 +85,6 @@ module.exports = ({
     }
 
     const { end, write, on, writeHead } = res
-    let statusCode = res.statusCode
-
-    Object.defineProperty(res, 'statusCode', {
-      get () {
-        return statusCode
-      },
-      set (status) {
-        statusCode = status
-        pendingStatus = status
-      }
-    })
 
     res.writeHead = function (status, reason, headers) {
       if (typeof reason !== 'string') [headers, reason] = [reason, headers]
