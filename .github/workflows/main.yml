@@ -37,6 +37,11 @@ jobs:
     strategy:
       matrix:
         version:
+          - node: 4
+          - node: 6
+          - node: 8
+          - node: 12
+          - node: 10
           - node: 14
           - node: 16
           - node: 18
@@ -54,6 +59,12 @@ jobs:
         run: npm install --no-package-lock
       - name: Test
         run: npm test
+      - name: Report
+        run: mkdir -p coverage && npx c8 report --reporter=text-lcov > coverage/lcov.info
+      - name: Coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') && !startsWith(github.event.head_commit.message, 'docs:') && !startsWith(github.event.head_commit.message, 'ci:') }}
