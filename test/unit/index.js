@@ -1,9 +1,8 @@
 'use strict'
 
-const http = require('http')
 const test = require('ava')
 
-const { prepare, get, listen } = require('../util')
+const { prepare, get, runServer } = require('../util')
 const compression = require('../../src')
 
 test('export a function', t => {
@@ -28,14 +27,11 @@ test('allow server to work if not compressing', async t => {
     res.end('OK')
   }
 
-  const server = http.createServer((req, res) =>
+  const url = await runServer(t, (req, res) =>
     compression({ level: 1, threshold: 4 })(req, res, () => handler(req, res))
   )
 
-  const serverUrl = await listen(server)
-  t.teardown(() => server.close())
-
-  const { res, data } = await get(serverUrl, {
+  const { res, data } = await get(url, {
     headers: {
       'accept-encoding': 'gzip'
     }
@@ -78,14 +74,11 @@ test('respect `res.statusCode`', async t => {
     res.end('hello world')
   }
 
-  const server = http.createServer((req, res) =>
+  const url = await runServer(t, (req, res) =>
     compression({ threshold: 0 })(req, res, () => handler(req, res))
   )
 
-  const serverUrl = await listen(server)
-  t.teardown(() => server.close())
-
-  const { res, data } = await get(serverUrl, {
+  const { res, data } = await get(url, {
     headers: {
       'accept-encoding': 'br'
     }
@@ -102,14 +95,11 @@ test('respect `res.writeHead`', async t => {
     res.end('hello world')
   }
 
-  const server = http.createServer((req, res) =>
+  const url = await runServer(t, (req, res) =>
     compression({ threshold: 0 })(req, res, () => handler(req, res))
   )
 
-  const serverUrl = await listen(server)
-  t.teardown(() => server.close())
-
-  const { res, data } = await get(serverUrl, {
+  const { res, data } = await get(url, {
     headers: {
       'accept-encoding': 'br'
     }
