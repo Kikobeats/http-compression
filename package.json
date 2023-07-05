@@ -35,6 +35,7 @@
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
+    "@ksmithut/prettier-standard": "latest",
     "async-listen": "latest",
     "ava": "latest",
     "c8": "latest",
@@ -44,7 +45,6 @@
     "git-authors-cli": "latest",
     "nano-staged": "latest",
     "npm-check-updates": "latest",
-    "@ksmithut/prettier-standard": "latest",
     "simple-get": "latest",
     "simple-git-hooks": "latest",
     "standard": "latest",
