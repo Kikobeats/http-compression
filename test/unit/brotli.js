@@ -10,7 +10,7 @@ const suite = 'createBrotliCompress' in zlib ? test : test.skip
 
 suite('compresses content with brotli when supported', async t => {
   const { req, res } = prepare('GET', 'br')
-  compression({ threshold: 0 })(req, res)
+  compression({ threshold: 0, level: 11 })(req, res)
   res.writeHead(200, { 'content-type': 'text/plain' })
   res.end('hello world')
 
