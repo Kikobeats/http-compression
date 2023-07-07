@@ -58,12 +58,11 @@ module.exports = ({
         res.setHeader('Content-Encoding', encoding)
         res.removeHeader('Content-Length')
         if (encoding === 'br') {
-          const params = {
-            [zlib.constants.BROTLI_PARAM_QUALITY]: level,
-            [zlib.constants.BROTLI_PARAM_SIZE_HINT]: size
-          }
           compress = zlib.createBrotliCompress({
-            params: Object.assign(params, brotliOpts)
+            params: Object.assign({
+              [zlib.constants.BROTLI_PARAM_QUALITY]: level === -1 ? 9 : level,
+              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: size
+            }, brotliOpts)
           })
         } else {
           compress = zlib.createGzip(Object.assign({ level }, gzipOpts))
