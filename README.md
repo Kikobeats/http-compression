@@ -33,19 +33,20 @@ express()
   .listen(3000)
 ```
 
-Otherwise, add it wrapping the main handler:
+Otherwise, just pass `req, res` primitives to it:
 
 ```js
-const compression = require('http-compression')
-const express = require('express')
+const compression = require('http-compression')({ /* see options below */ })
+const { createServer } = require('http')
 
-express()
-  .use(compression({ /* see options below */ }))
-  .use((req, res) => {
-    // this will get compressed:
-    res.end('hello world!'.repeat(1000))
-  })
-  .listen(3000)
+const server = createServer((req, res) => {
+  compression(req, res)
+  res.end('hello world!'.repeat(1000))
+})
+
+server.listen(3000, () => {
+  console.log('> Listening at http://localhost:3000')
+})
 ```
 
 ## API
