@@ -1,4 +1,4 @@
-const { default: listen } = require('async-listen')
+const { listen } = require('async-listen')
 const { ServerResponse } = require('http')
 const { createServer } = require('http')
 const simpleGet = require('simple-get')

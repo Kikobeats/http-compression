@@ -59,10 +59,13 @@ module.exports = ({
         res.removeHeader('Content-Length')
         if (encoding === 'br') {
           compress = zlib.createBrotliCompress({
-            params: Object.assign({
-              [zlib.constants.BROTLI_PARAM_QUALITY]: level === -1 ? 9 : level,
-              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: size
-            }, brotliOpts)
+            params: Object.assign(
+              {
+                [zlib.constants.BROTLI_PARAM_QUALITY]: level === -1 ? 9 : level,
+                [zlib.constants.BROTLI_PARAM_SIZE_HINT]: size
+              },
+              brotliOpts
+            )
           })
         } else {
           compress = zlib.createGzip(Object.assign({ level }, gzipOpts))
@@ -80,12 +83,13 @@ module.exports = ({
         listeners.forEach(p => on.apply(res, p))
       }
 
-      writeHead.call(res, pendingStatus || res.statusCode)
+      res.writeHead(pendingStatus || res.statusCode, undefined, undefined, true)
     }
 
     const { end, write, on, writeHead } = res
 
-    res.writeHead = function (status, reason, headers) {
+    res.writeHead = function (status, reason, headers, native = false) {
+      if (native) return writeHead.call(res, status)
       if (typeof reason !== 'string') [headers, reason] = [reason, headers]
       if (headers) for (const i in headers) res.setHeader(i, headers[i])
       pendingStatus = status
