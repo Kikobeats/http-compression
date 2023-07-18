@@ -3,22 +3,41 @@
 const test = require('ava')
 
 const { prepare, get, runServer } = require('../util')
-const compression = require('../../src')
+const createCompression = require('../../src')
 
 test('export a function', t => {
-  t.is(typeof compression, 'function')
+  t.is(typeof createCompression, 'function')
 })
 
 test('installs as middleware', t => {
   const { req, res } = prepare('GET', 'gzip')
-  const middleware = compression()
+  const compression = createCompression()
 
   let calledNext = false
-  middleware(req, res, () => {
+  compression(req, res, () => {
     calledNext = true
   })
 
   t.true(calledNext)
+})
+
+test('install as non middleware', async t => {
+  const compression = createCompression({ level: 1, threshold: 4 })
+
+  const url = await runServer(t, (req, res) => {
+    compression(req, res)
+    res.end('hello world!'.repeat(1000))
+  })
+
+  const { res } = await get(url, {
+    headers: {
+      'accept-encoding': 'br'
+    }
+  })
+
+  t.is(res.headers['content-encoding'], 'br')
+  t.is(res.headers['transfer-encoding'], 'chunked')
+  t.is(res.headers['content-length'], undefined)
 })
 
 test('allow server to work if not compressing', async t => {
@@ -28,7 +47,9 @@ test('allow server to work if not compressing', async t => {
   }
 
   const url = await runServer(t, (req, res) =>
-    compression({ level: 1, threshold: 4 })(req, res, () => handler(req, res))
+    createCompression({ level: 1, threshold: 4 })(req, res, () =>
+      handler(req, res)
+    )
   )
 
   const { res, data } = await get(url, {
@@ -49,7 +70,7 @@ test('allow server to work if not compressing', async t => {
 test('respect `accept-encoding`', t => {
   {
     const { req, res } = prepare('GET', 'gzip;q=0.5, br;q=1.0')
-    compression({ threshold: 0 })(req, res)
+    createCompression({ threshold: 0 })(req, res)
 
     res.writeHead(200, { 'content-type': 'text/plain' })
     res.end('hello world'.repeat(20))
@@ -59,7 +80,7 @@ test('respect `accept-encoding`', t => {
 
   {
     const { req, res } = prepare('GET', null)
-    compression({ threshold: 0 })(req, res)
+    createCompression({ threshold: 0 })(req, res)
 
     res.writeHead(200, { 'content-type': 'text/plain' })
     res.end('hello world'.repeat(20))
@@ -74,8 +95,10 @@ test('respect `res.statusCode`', async t => {
     res.end('hello world')
   }
 
+  const compression = createCompression({ threshold: 0 })
+
   const url = await runServer(t, (req, res) =>
-    compression({ threshold: 0 })(req, res, () => handler(req, res))
+    compression(req, res, () => handler(req, res))
   )
 
   const { res, data } = await get(url, {
@@ -90,13 +113,15 @@ test('respect `res.statusCode`', async t => {
 })
 
 test('respect `res.writeHead`', async t => {
-  const handler = (req, res) => {
+  const handler = (_, res) => {
     res.writeHead(201)
     res.end('hello world')
   }
 
+  const compression = createCompression({ threshold: 0 })
+
   const url = await runServer(t, (req, res) =>
-    compression({ threshold: 0 })(req, res, () => handler(req, res))
+    compression(req, res, () => handler(req, res))
   )
 
   const { res, data } = await get(url, {
