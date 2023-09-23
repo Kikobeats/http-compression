@@ -10,7 +10,7 @@ const compression = require('../../src')
 
 test('allows piping streams', async t => {
   const pkg = join(__dirname, '../../package.json')
-  const gzipped = zlib.gzipSync(fs.readFileSync(pkg))
+  const gzipped = zlib.gzipSync(fs.readFileSync(pkg), { level: 7 })
 
   const { req, res } = prepare('GET', 'gzip')
   compression({ threshold: 0 })(req, res)

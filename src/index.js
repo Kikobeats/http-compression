@@ -60,12 +60,12 @@ module.exports = ({
         if (encoding === 'br') {
           compress = zlib.createBrotliCompress({
             params: Object.assign({
-              [zlib.constants.BROTLI_PARAM_QUALITY]: level === -1 ? 9 : level,
+              [zlib.constants.BROTLI_PARAM_QUALITY]: level === -1 ? 1 : level,
               [zlib.constants.BROTLI_PARAM_SIZE_HINT]: size
             }, brotliOpts)
           })
         } else {
-          compress = zlib.createGzip(Object.assign({ level }, gzipOpts))
+          compress = zlib.createGzip(Object.assign({ level: level === -1 ? 7 : level }, gzipOpts))
         }
         // backpressure
         compress.on(
