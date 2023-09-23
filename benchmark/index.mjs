@@ -1,5 +1,3 @@
-import prettyBytes from 'pretty-bytes'
-import prettyMs from 'pretty-ms'
 import zlib from 'zlib'
 
 const timestamp = (start = process.hrtime.bigint()) => () =>
@@ -16,8 +14,14 @@ const response = await fetch(process.argv[2], {
 const buffer = Buffer.from(await response.arrayBuffer())
 
 console.log()
-console.log(`benchmarking ${url} payload – ${prettyBytes(buffer.length)}`)
+console.log(`benchmarking ${url} payload – ${buffer.length}`)
 console.log()
+
+const percent = value => `${Number(value).toFixed(2)}%`
+
+const ratio = (compressed, buffer) => 100 - (compressed.length / buffer.length * 100)
+
+const efficiency = (compressed, buffer, time) => ratio(compressed, buffer) / time
 
 for (let level = zlib.constants.BROTLI_MIN_QUALITY - 1; level <= zlib.constants.BROTLI_MAX_QUALITY; level++) {
   const finish = timestamp()
@@ -32,7 +36,7 @@ for (let level = zlib.constants.BROTLI_MIN_QUALITY - 1; level <= zlib.constants.
     return note.join(' ')
   })()
 
-  console.log(`brotli level=${level} bytes=${prettyBytes(compressed.length)} time=${prettyMs(end)}\t${annotation}`)
+  console.log(`brotli level=${level} bytes=${compressed.length} end=${end} ratio=${percent(ratio(compressed, buffer))} efficiency=${percent(efficiency(compressed, buffer, end))}\t${annotation}`)
 }
 
 console.log()
@@ -51,7 +55,7 @@ for (let level = zlib.constants.Z_MIN_LEVEL; level <= zlib.constants.Z_MAX_LEVEL
     return note.join(' ')
   })()
 
-  console.log(`gzip level=${level} bytes=${prettyBytes(compressed.length)} time=${prettyMs(end)}\t${annotation}`)
+  console.log(`gzip level=${level} bytes=${compressed.length} end=${end} ratio=${percent(ratio(compressed, buffer))} efficiency=${percent(efficiency(compressed, buffer, end))}\t${annotation}`)
 }
 
 console.log()
@@ -60,5 +64,6 @@ for (let level = zlib.constants.Z_MIN_LEVEL; level <= zlib.constants.Z_MAX_LEVEL
   const finish = timestamp()
   const compressed = zlib.deflateSync(buffer, { level })
   const end = finish()
-  console.log(`deflate level=${level} bytes=${prettyBytes(compressed.length)} time=${prettyMs(end)}`)
+
+  console.log(`deflate level=${level} bytes=${compressed.length} end=${end} ratio=${percent(ratio(compressed, buffer))} efficiency=${percent(efficiency(compressed, buffer, end))}`)
 }
