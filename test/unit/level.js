@@ -18,7 +18,7 @@ test('gzip level 7 by default', async t => {
   compression({ threshold: 0 })(req, res)
 
   res.writeHead(200, { 'content-type': 'text/plain' })
-  fs.createReadStream(contentPath).pipe(res, { end: true })
+  fs.createReadStream(contentPath).pipe(res)
 
   const body = await res.getResponseData()
 
@@ -37,7 +37,7 @@ test('brotli level 1 by default', async t => {
   compression({ threshold: 0 })(req, res)
 
   res.writeHead(200, { 'content-type': 'text/plain' })
-  fs.createReadStream(contentPath).pipe(res, { end: true })
+  fs.createReadStream(contentPath).pipe(res)
 
   const body = await res.getResponseData()
 
