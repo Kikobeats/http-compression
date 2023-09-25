@@ -50,9 +50,7 @@ class Response extends ServerResponse {
 }
 
 const prepare = (method, encoding) => {
-  const req = new Request(method, {
-    'Accept-Encoding': ENCODING[encoding] || encoding
-  })
+  const req = new Request(method, { 'accept-encoding': ENCODING[encoding] || encoding })
   const res = new Response(req)
   return { req, res }
 }
