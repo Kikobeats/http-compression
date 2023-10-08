@@ -35,6 +35,7 @@
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
+    "@kikobeats/time-span": "latest",
     "@ksmithut/prettier-standard": "latest",
     "async-listen": "latest",
     "ava": "latest",
@@ -85,7 +86,7 @@
     ]
   },
   "nano-staged": {
-    "*.js,!*.min.js": [
+    "*.js": [
       "prettier-standard",
       "standard --fix"
     ],

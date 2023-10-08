@@ -1,14 +1,12 @@
+import createTimeSpan from '@kikobeats/time-span'
 import zlib from 'zlib'
 
-const timestamp = (start = process.hrtime.bigint()) => () =>
-  Number(process.hrtime.bigint() - start) / 1e6
+const timeSpan = createTimeSpan()
 
 const url = process.argv[2]
 
 const response = await fetch(process.argv[2], {
-  headers: {
-    'accept-encoding': 'identity'
-  }
+  headers: { 'accept-encoding': 'identity' }
 })
 
 const buffer = Buffer.from(await response.arrayBuffer())
@@ -24,9 +22,9 @@ const ratio = (compressed, buffer) => 100 - (compressed.length / buffer.length *
 const efficiency = (compressed, buffer, time) => ratio(compressed, buffer) / time
 
 for (let level = zlib.constants.BROTLI_MIN_QUALITY - 1; level <= zlib.constants.BROTLI_MAX_QUALITY; level++) {
-  const finish = timestamp()
+  const duration = timeSpan()
   const compressed = zlib.brotliCompressSync(buffer, { params: { [zlib.constants.BROTLI_PARAM_QUALITY]: level } })
-  const end = finish()
+  const end = duration()
 
   const annotation = (() => {
     const note = []
@@ -42,7 +40,7 @@ for (let level = zlib.constants.BROTLI_MIN_QUALITY - 1; level <= zlib.constants.
 console.log()
 
 for (let level = zlib.constants.Z_MIN_LEVEL; level <= zlib.constants.Z_MAX_LEVEL; level++) {
-  const finish = timestamp()
+  const finish = timeSpan()
   const compressed = zlib.gzipSync(buffer, { level })
   const end = finish()
 
@@ -61,7 +59,7 @@ for (let level = zlib.constants.Z_MIN_LEVEL; level <= zlib.constants.Z_MAX_LEVEL
 console.log()
 
 for (let level = zlib.constants.Z_MIN_LEVEL; level <= zlib.constants.Z_MAX_LEVEL; level++) {
-  const finish = timestamp()
+  const finish = timeSpan()
   const compressed = zlib.deflateSync(buffer, { level })
   const end = finish()
 
