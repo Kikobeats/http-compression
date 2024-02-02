@@ -1,7 +1,7 @@
 {
   "name": "http-compression",
   "description": "Adding gzip/brotli for your HTTP server",
-  "homepage": "https://nicedoc.io/Kikobeats/http-compression",
+  "homepage": "https://github.com/Kikobeats/http-compression",
   "version": "1.0.17",
   "main": "src/index.js",
   "author": {
@@ -41,7 +41,7 @@
     "ava": "latest",
     "c8": "latest",
     "ci-publish": "latest",
-    "conventional-github-releaser": "latest",
+    "github-generate-release": "latest",
     "finepack": "latest",
     "git-authors-cli": "latest",
     "nano-staged": "latest",
@@ -60,14 +60,14 @@
   ],
   "scripts": {
     "clean": "rm -rf node_modules",
-    "contributors": "(npx git-authors-cli && npx finepack --sort-ignore-object-at ava && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
+    "contributors": "(npx git-authors-cli && npx finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "c8 report --reporter=text-lcov > coverage/lcov.info",
     "lint": "standard-markdown README.md && standard",
     "postrelease": "npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
     "prerelease": "npm run update:check && npm run contributors",
     "pretest": "npm run lint",
     "release": "standard-version -a",
-    "release:github": "conventional-github-releaser -p angular",
+    "release:github": "github-generate-release",
     "release:tags": "git push --follow-tags origin HEAD:master",
     "test": "c8 ava",
     "update": "ncu -u",
@@ -94,7 +94,7 @@
       "standard-markdown"
     ],
     "package.json": [
-      "finepack --sort-ignore-object-at ava"
+      "finepack"
     ]
   },
   "simple-git-hooks": {
