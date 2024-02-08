@@ -2,7 +2,16 @@ const { default: listen } = require('async-listen')
 const { ServerResponse } = require('http')
 const { createServer } = require('http')
 const simpleGet = require('simple-get')
-const { promisify } = require('util')
+
+const closeServer = server =>
+  require('util').promisify(server.close.bind(server))()
+
+const runServer = async (t, handler) => {
+  const server = createServer(handler)
+  const url = await listen(server)
+  t.teardown(() => closeServer(server))
+  return url
+}
 
 // IncomingMessage
 class Request {
@@ -64,14 +73,5 @@ const get = (url, opts) =>
       err ? reject(err) : resolve({ res, data })
     )
   )
-
-const closeServer = server => promisify(server.close)
-
-const runServer = async (t, handler) => {
-  const server = createServer(handler)
-  const url = await listen(server)
-  t.teardown(() => closeServer(server))
-  return url
-}
 
 module.exports = { prepare, toAscii, runServer, get }
