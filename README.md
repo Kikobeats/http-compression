@@ -51,7 +51,7 @@ server.listen(3000, () => {
 
 ## API
 
-The `compression(options)` function returns a Express style iddleware of the form `(req, res, next)`.
+The `compression(options)` function returns an Express style middleware of the form `(req, res, next)`.
 
 ### Options
 
