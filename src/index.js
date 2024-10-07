@@ -20,7 +20,7 @@ const getChunkSize = (chunk, enc) => (chunk ? Buffer.byteLength(chunk, enc) : 0)
  */
 module.exports = ({
   threshold = 1024,
-  level = { brotli: 1, gzip: 7 },
+  level = { brotli: 0, gzip: 1 },
   brotli = true,
   gzip = true,
   mimes = MIMES

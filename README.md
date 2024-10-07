@@ -65,7 +65,7 @@ Responses below this threshold (in bytes) are not compressed. The default value 
 #### level
 
 Type: `object`<br>
-Default: `{ brotli: 1, gzip: 7 }`
+Default: `{ brotli: 1, gzip: 1 }`
 
 The compression effort/level/quality setting, used by both Gzip and Brotli. The scale range is:
 
