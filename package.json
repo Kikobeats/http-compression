@@ -2,7 +2,7 @@
   "name": "http-compression",
   "description": "Adding gzip/brotli for your HTTP server",
   "homepage": "https://github.com/Kikobeats/http-compression",
-  "version": "1.0.21",
+  "version": "1.1.0",
   "main": "src/index.js",
   "author": {
     "email": "josefrancisco.verdu@gmail.com",
