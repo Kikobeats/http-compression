@@ -11,8 +11,8 @@ const compression = require('../../src')
 const contentPath = join(__dirname, '../../package.json')
 const content = fs.readFileSync(contentPath)
 
-test('gzip level 7 by default', async t => {
-  const compressed = zlib.gzipSync(content, { level: 7 })
+test('gzip level 1 by default', async t => {
+  const compressed = zlib.gzipSync(content, { level: 1 })
 
   const { req, res } = prepare('GET', 'gzip')
   compression({ threshold: 0 })(req, res)
@@ -26,10 +26,10 @@ test('gzip level 7 by default', async t => {
   t.deepEqual(toAscii(body), toAscii(compressed))
 })
 
-test('brotli level 1 by default', async t => {
+test('brotli level 0 by default', async t => {
   const compressed = zlib.brotliCompressSync(content, {
     params: {
-      [zlib.constants.BROTLI_PARAM_QUALITY]: 1
+      [zlib.constants.BROTLI_PARAM_QUALITY]: 0
     }
   })
 
