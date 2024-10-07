@@ -11,7 +11,7 @@ const getChunkSize = (chunk, enc) => (chunk ? Buffer.byteLength(chunk, enc) : 0)
 /**
  * @param {object} [options]
  * @param {number} [options.threshold = 1024] Don't compress responses below this size (in bytes)
- * @param {number} [options.level = -1] Gzip/Brotli compression effort (1-11, or -1 for default)
+ * @param {object} [options.level = { brotli: 1, gzip: 7 }] - Compression effort levels for Brotli and Gzip.
  * @param {boolean} [options.brotli = true] Generate and serve Brotli-compressed responses
  * @param {boolean} [options.gzip = true] Generate and serve Gzip-compressed responses
  * @param {RegExp} [options.mimes] Regular expression of response MIME types to compress (default: text|javascript|json|xml)
@@ -20,7 +20,7 @@ const getChunkSize = (chunk, enc) => (chunk ? Buffer.byteLength(chunk, enc) : 0)
  */
 module.exports = ({
   threshold = 1024,
-  level = -1,
+  level = { brotli: 0, gzip: 1 },
   brotli = true,
   gzip = true,
   mimes = MIMES
@@ -60,12 +60,12 @@ module.exports = ({
         if (encoding === 'br') {
           compress = zlib.createBrotliCompress({
             params: Object.assign({
-              [zlib.constants.BROTLI_PARAM_QUALITY]: level === -1 ? 1 : level,
+              [zlib.constants.BROTLI_PARAM_QUALITY]: level.brotli,
               [zlib.constants.BROTLI_PARAM_SIZE_HINT]: size
             }, brotliOpts)
           })
         } else {
-          compress = zlib.createGzip(Object.assign({ level: level === -1 ? 7 : level }, gzipOpts))
+          compress = zlib.createGzip(Object.assign({ level: level.gzip }, gzipOpts))
         }
         // backpressure
         compress.on(

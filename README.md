@@ -64,10 +64,15 @@ Responses below this threshold (in bytes) are not compressed. The default value 
 
 #### level
 
-Type: `Number`<br>
-Default: `-1`
+Type: `object`<br>
+Default: `{ brotli: 1, gzip: 1 }`
 
-The compression effort/level/quality setting, used by both Gzip and Brotli. The scale ranges from 1 to 11, where lower values are faster and higher values produce smaller output. The default value of `-1` uses the default compression level as defined by Gzip (6) and Brotli (6).
+The compression effort/level/quality setting, used by both Gzip and Brotli. The scale range is:
+
+- brotli: from 0 to 11.
+- gzip: from -1 to 9.
+
+The library uses uses the most efficiency level by default determined by a [benchmark](bencharmk/index.mjs).
 
 #### brotli
 
