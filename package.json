@@ -1,6 +1,6 @@
 {
   "name": "http-compression",
-  "description": "Adding gzip/brotli for your HTTP server",
+  "description": "Add gzip, deflate, and Brotli compression middleware to Node.js HTTP servers.",
   "homepage": "https://github.com/Kikobeats/http-compression",
   "version": "1.1.3",
   "main": "src/index.js",
@@ -28,8 +28,10 @@
     "compress",
     "compression",
     "deflate",
+    "encoding",
     "gzip",
     "http",
+    "middleware",
     "server"
   ],
   "devDependencies": {
@@ -88,6 +90,7 @@
   },
   "nano-staged": {
     "*.js": [
+      "npx @kikobeats/prettier-standard",
       "standard --fix"
     ],
     "*.md": [
