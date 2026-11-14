@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.2.0 (2026-11-14)
+
+
+### Features
+
+* compress at brotli 2 and gzip 2 by default ([#25](https://github.com/Kikobeats/http-compression/issues/25)) ([a57f8e2](https://github.com/Kikobeats/http-compression/commit/a57f8e2ae56b3bd721d8256c5a43576936fe4d5e))
+
 ### 1.1.3 (2026-04-14)
 
 ### 1.1.2 (2025-08-12)
