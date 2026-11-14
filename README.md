@@ -65,14 +65,20 @@ Responses below this threshold (in bytes) are not compressed. The default value 
 #### level
 
 Type: `object`<br>
-Default: `{ brotli: 1, gzip: 1 }`
+Default: `{ brotli: 2, gzip: 2 }`
 
 The compression effort/level/quality setting, used by both Gzip and Brotli. The scale range is:
 
 - brotli: from 0 to 11.
 - gzip: from -1 to 9.
 
-The library uses uses the most efficiency level by default determined by a [benchmark](bencharmk/index.mjs).
+The defaults are the highest levels that stay within 3% (plus 0.05ms of timer noise) of the fastest level on every payload tried. The [benchmark](benchmark/index.mjs) serves each payload through this middleware and adds the time to send the compressed body at 100 Mbps. The payloads were HTML (794kB), Markdown (190kB), JavaScript (546kB), a JSON API response (4.2MB) and a small JSON one (2kB). Brotli 2 and gzip 2 were picked in 6 of 7 runs. Brotli 3 sits at the edge of run-to-run noise on the large JSON, 2.9% to 4.2% slower than brotli 2. Over a faster link the cheapest levels win, and over a slower one higher levels do. A level you leave out keeps its default.
+
+Pick levels for your own traffic with the [benchmark](benchmark/index.mjs):
+
+```
+node benchmark/index.mjs --mbps=100 https://example.com/page.html https://example.com/api.json
+```
 
 #### brotli
 
