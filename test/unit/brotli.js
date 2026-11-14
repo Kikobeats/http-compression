@@ -5,7 +5,9 @@ const zlib = require('zlib')
 const { toAscii, prepare } = require('../util')
 const compression = require('../../src')
 
-const test = 'createBrotliCompress' in zlib ? require('ava') : require('ava').skip
+const ava = require('../util/ava')
+
+const test = 'createBrotliCompress' in zlib ? ava : ava.skip
 
 test('compresses content with brotli when supported', async t => {
   const { req, res } = prepare('GET', 'br')
