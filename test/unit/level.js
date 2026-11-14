@@ -56,6 +56,8 @@ test('an undefined level keeps its default', async t => {
 test('a null level keeps the defaults', async t => {
   await expectBody(t, 'br', { level: null }, brotliAt(2))
   await expectBody(t, 'gzip', { level: null }, gzipAt(2))
+  await expectBody(t, 'br', { level: { brotli: null } }, brotliAt(2))
+  await expectBody(t, 'gzip', { level: { gzip: null } }, gzipAt(2))
 })
 
 test('level 0 is kept, not replaced by the default', async t => {
