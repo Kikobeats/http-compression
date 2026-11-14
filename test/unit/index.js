@@ -1,6 +1,6 @@
 'use strict'
 
-const test = require('ava')
+const test = require('../util/ava')
 
 const { prepare, get, runServer } = require('../util')
 const compression = require('../../src')
@@ -74,9 +74,7 @@ test('respect `res.statusCode`', async t => {
     res.end('hello world')
   }
 
-  const url = await runServer(t, (req, res) =>
-    compression({ threshold: 0 })(req, res, () => handler(req, res))
-  )
+  const url = await runServer(t, (req, res) => compression({ threshold: 0 })(req, res, () => handler(req, res)))
 
   const { res, data } = await get(url, {
     headers: {
@@ -95,9 +93,7 @@ test('respect `res.writeHead`', async t => {
     res.end('hello world')
   }
 
-  const url = await runServer(t, (req, res) =>
-    compression({ threshold: 0 })(req, res, () => handler(req, res))
-  )
+  const url = await runServer(t, (req, res) => compression({ threshold: 0 })(req, res, () => handler(req, res)))
 
   const { res, data } = await get(url, {
     headers: {

@@ -2,7 +2,7 @@
 
 const { join } = require('path')
 const zlib = require('zlib')
-const test = require('ava')
+const test = require('../util/ava')
 const fs = require('fs')
 
 const { prepare, toAscii } = require('../util')

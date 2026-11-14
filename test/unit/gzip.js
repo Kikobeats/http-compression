@@ -1,6 +1,6 @@
 'use strict'
 
-const test = require('ava')
+const test = require('../util/ava')
 
 const { prepare } = require('../util')
 const compression = require('../../src')
