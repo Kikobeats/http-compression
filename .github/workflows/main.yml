@@ -60,7 +60,10 @@ jobs:
         with:
           version: latest
       - name: Install
-        run: pnpm install --dangerously-allow-all-builds
+        env:
+          pnpm_config_dangerously_allow_all_builds: true
+          SKIP_INSTALL_SIMPLE_GIT_HOOKS: true
+        run: pnpm install
       - name: Test
         run: npm test
       - name: Report
@@ -96,7 +99,10 @@ jobs:
           git config --global user.name ${{ secrets.GIT_USERNAME }}
           git pull origin master
       - name: Install
-        run: pnpm install --dangerously-allow-all-builds
+        env:
+          pnpm_config_dangerously_allow_all_builds: true
+          SKIP_INSTALL_SIMPLE_GIT_HOOKS: true
+        run: pnpm install
       - name: Test
         run: npm test
       - name: Release
