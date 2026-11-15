@@ -1,8 +1,8 @@
 # http-compression
 
-![Last version](https://img.shields.io/github/tag/Kikobeats/http-compression.svg?style=flat-square)
-[![Coverage Status](https://img.shields.io/coveralls/Kikobeats/http-compression.svg?style=flat-square)](https://coveralls.io/github/Kikobeats/http-compression)
-[![NPM Status](https://img.shields.io/npm/dm/http-compression.svg?style=flat-square)](https://www.npmjs.org/package/http-compression)
+[![Last version](https://img.shields.io/github/v/tag/Kikobeats/http-compression?style=flat-square)](https://github.com/Kikobeats/http-compression/releases)
+[![Coverage Status](https://img.shields.io/coverallsCoverage/github/Kikobeats/http-compression?style=flat-square)](https://coveralls.io/github/Kikobeats/http-compression)
+[![NPM Status](https://img.shields.io/npm/dm/http-compression?style=flat-square)](https://www.npmjs.com/package/http-compression)
 
 **http-compression** adds compression for your HTTP server in Node.js by:
 
